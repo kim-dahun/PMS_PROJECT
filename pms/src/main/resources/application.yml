@@ -7,7 +7,9 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: ADMINUSER
     password: ADMINUSER
-
+  messages:
+    basename: messages
+    encoding: UTF-8
 
   jpa:
     hibernate:
@@ -26,3 +28,7 @@ logging:
         type:
           descriptor:
             sql: trace  # query? ?? ?? ?? ????? ??? ? ?? ?????. TRACE Log? ?? ?????.
+
+
+file:
+  dir: 'C:\servFile'
