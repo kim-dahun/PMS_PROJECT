@@ -13,13 +13,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none  # option type: create, create-drop, update, validate, none
+      ddl-auto: update  # option type: create, create-drop, update, validate, none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         show_sql: true  # sql ??? ?????.
         format_sql: true  # sql query formatting
         use_sql_comments: true  # sql ??? ????? ?????.
-
 
 logging:
   level:
@@ -32,3 +33,8 @@ logging:
 
 file:
   dir: 'C:\servFile'
+
+
+jwt:
+  expiration_time: 86400000 #1일
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
