@@ -2,8 +2,10 @@ package com.prod.pms.api.user.service.impl;
 
 import com.prod.pms.api.common.service.MessageService;
 import com.prod.pms.api.common.vo.CmnResponseVo;
+import com.prod.pms.api.user.service.UserService;
 import com.prod.pms.api.user.vo.UserInfoVo;
 import com.prod.pms.api.user.vo.UserLoginVo;
+import com.prod.pms.constants.HttpStatusConstants;
 import com.prod.pms.constants.MessageConstants;
 import com.prod.pms.domain.user.entity.UserInfo;
 import com.prod.pms.domain.user.repository.UserInfoRepository;
@@ -23,7 +25,7 @@ import static com.prod.pms.constants.MessageConstants.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserDetailsService {
+public class UserServiceImpl implements UserService {
 
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
@@ -54,18 +56,22 @@ public class UserServiceImpl implements UserDetailsService {
         CmnResponseVo cmnResponseVo = new CmnResponseVo();
         try {
             UserInfo userInfo = getUserInfo(userLoginVo.getUserId(), userLoginVo.getUserPassword());
-            if(userInfo==null){
+            if(userInfo==null || userInfo.getUserId()==null){
                 cmnResponseVo.setMessage(messageService.getMessage(request,null,NOT_EXIST_ACCOUNT));
+                cmnResponseVo.setStatusCode(HttpStatusConstants.NOT_FOUND);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cmnResponseVo);
             } else if(!userInfo.isEnabled()){
+                cmnResponseVo.setStatusCode(HttpStatusConstants.FORBIDDEN);
                 cmnResponseVo.setMessage(messageService.getMessage(request,null,FAIL_ACCESS_ACCOUNT));
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(cmnResponseVo);
             }
 
             cmnResponseVo.setResultData(UserInfoVo.fromEntity(userInfo));
+            cmnResponseVo.setStatusCode(HttpStatusConstants.OK);
             cmnResponseVo.setMessage(messageService.getMessage(request,null,LOGIN_SUCCESS));
             return ResponseEntity.ok(cmnResponseVo);
         } catch(Exception e){
+            cmnResponseVo.setStatusCode(HttpStatusConstants.INTENAL_SERVER_ERROR);
             cmnResponseVo.setMessage(messageService.getMessage(request,null,FAIL_LOGIN));
             cmnResponseVo.setResultData(null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);

@@ -29,6 +29,11 @@ public class JwtTokenUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public String getUserLocaleFromToken(String token) {
+        final Claims claims = getAllClaimsFromToken(token);
+        return claims.get("userLocale", String.class);
+    }
+
     public List<Role> getUserRolesFromToken(String token) {
         final Claims claims = getAllClaimsFromToken(token);
         return ((List<String>)claims.get("userRole")).stream().map(x->Role.valueOf(x)).toList();
@@ -67,7 +72,7 @@ public class JwtTokenUtil {
     // 토큰 생성
     public String generateToken(UserDetails userDetails) {
 
-        Map<String, Object> customClaims = Map.of("userRole",userDetails.getAuthorities().stream().map(x->x.toString()).toList());
+        Map<String, Object> customClaims = Map.of("userRole",userDetails.getAuthorities().stream().map(x->x.toString()).toList(),"userLocale","ko");
 
         return Jwts.builder()
                 .setClaims(customClaims)

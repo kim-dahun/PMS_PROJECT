@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 public class CmnResponseVo {
 
-    private Integer statusCode;
+    private String statusCode;
 
     private String message;
 
