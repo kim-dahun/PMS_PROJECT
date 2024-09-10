@@ -1,18 +1,23 @@
 package com.prod.pms.api.user.service.impl;
 
 import com.prod.pms.api.common.service.MessageService;
+import com.prod.pms.api.common.service.TokenService;
 import com.prod.pms.api.common.vo.CmnResponseVo;
+import com.prod.pms.api.common.vo.JwtTokenVo;
 import com.prod.pms.api.user.service.UserService;
 import com.prod.pms.api.user.vo.UserInfoVo;
 import com.prod.pms.api.user.vo.UserLoginVo;
 import com.prod.pms.constants.HttpStatusConstants;
+import com.prod.pms.constants.JwtConstants;
 import com.prod.pms.constants.MessageConstants;
 import com.prod.pms.domain.user.entity.UserInfo;
 import com.prod.pms.domain.user.repository.UserInfoRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +25,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static com.prod.pms.constants.JwtConstants.TOKEN_TYPE_ACCESS;
+import static com.prod.pms.constants.JwtConstants.TOKEN_TYPE_REFRESH;
 import static com.prod.pms.constants.MessageConstants.*;
 
 @Service
@@ -30,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
+    private final TokenService tokenService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -69,7 +77,20 @@ public class UserServiceImpl implements UserService {
             cmnResponseVo.setResultData(UserInfoVo.fromEntity(userInfo));
             cmnResponseVo.setStatusCode(HttpStatusConstants.OK);
             cmnResponseVo.setMessage(messageService.getMessage(request,null,LOGIN_SUCCESS));
-            return ResponseEntity.ok(cmnResponseVo);
+
+            JwtTokenVo jwtTokenVo = tokenService.getRefreshToken(userInfo);
+
+            ResponseCookie accessCookie = ResponseCookie.from(TOKEN_TYPE_ACCESS, jwtTokenVo.getAccessToken()).httpOnly(true).maxAge(60*10).path("/").build();
+
+            ResponseCookie refreshCookie = ResponseCookie.from(TOKEN_TYPE_REFRESH, jwtTokenVo.getRefreshToken()).httpOnly(true).path("/")
+                    .maxAge(24 * 60 * 60).build();
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(HttpHeaders.SET_COOKIE,accessCookie.toString());
+            httpHeaders.add(HttpHeaders.SET_COOKIE,refreshCookie.toString());
+
+
+            return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(cmnResponseVo);
         } catch(Exception e){
             cmnResponseVo.setStatusCode(HttpStatusConstants.INTENAL_SERVER_ERROR);
             cmnResponseVo.setMessage(messageService.getMessage(request,null,FAIL_LOGIN));
