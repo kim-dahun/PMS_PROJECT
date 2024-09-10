@@ -32,7 +32,7 @@ public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
     @Column(name = "COMPANY_ID", length = 40)
     private String companyId;
 
-    @Column(name = "USER_PASSWORD", length = 40)
+    @Column(name = "USER_PASSWORD", length = 200)
     private String userPassword;
 
     @Column(name = "USER_NAME", length = 40)
@@ -62,6 +62,27 @@ public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     *
+     * @param userEmail
+     * @param userPhone
+     * @param userBirth
+     * @param useFlag
+     * @param userPassword
+     * @param userKorName
+     * @param roles
+     */
+    public void updateUserInfo(String userEmail, String userPhone, String userBirth, String useFlag, String userPassword, String userKorName, List<Role> roles){
+        this.userEmail = userEmail==null ?  this.userEmail : userEmail;
+        this.userPhone = userPhone==null ? this.userPhone : userPhone;
+        this.userBirth = userBirth==null ? this.userBirth : userBirth;
+        this.userKorName = userKorName ==null ? this.userKorName : userKorName;
+        this.useFlag = useFlag == null ? this.useFlag : useFlag;
+        this.userPassword = userPassword == null ? this.userPassword : userPassword;
+        this.roles = roles == null ? this.roles : roles;
+    }
+
 
     @Override
     public String getPassword() {

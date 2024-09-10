@@ -21,4 +21,12 @@ public class MessageConstants {
 
     public static final String LOGIN_SUCCESS = "LOGIN_SUCCESS";
 
+    public static final String CREATE_FAIL = "CREATE_FAIL";
+
+    public static final String CREATE_SUCCESS = "CREATE_SUCCESS";
+
+    public static final String CREATE_ACCOUNT_SUCCESS = "CREATE_ACCOUNT_SUCCESS";
+
+    public static final String CREATE_ACCOUNT_FAIL = "CREATE_ACCOUNT_FAIL";
+
 }
