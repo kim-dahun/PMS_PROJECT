@@ -2,9 +2,8 @@ package com.prod.pms.api.common.service.impl;
 
 import com.prod.pms.api.common.service.TokenService;
 import com.prod.pms.api.common.vo.JwtTokenVo;
-import com.prod.pms.constants.JwtConstants;
 import com.prod.pms.constants.Role;
-import com.prod.pms.utils.JwtTokenUtil;
+import com.prod.pms.utils.JwtTokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,7 @@ import static com.prod.pms.constants.JwtConstants.*;
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtils jwtTokenUtils;
     private String token;
 
 
@@ -38,7 +37,7 @@ public class TokenServiceImpl implements TokenService {
 
         token = this.getNowToken();
 
-        return jwtTokenUtil.getUsernameFromToken(token);
+        return jwtTokenUtils.getUsernameFromToken(token);
     }
 
     @Override
@@ -46,23 +45,23 @@ public class TokenServiceImpl implements TokenService {
 
         token = this.getNowToken();
 
-        return jwtTokenUtil.getUserLocaleFromToken(token);
+        return jwtTokenUtils.getUserLocaleFromToken(token);
     }
 
     @Override
     public List<Role> getUserRoles() {
         token = this.getNowToken();
 
-        return jwtTokenUtil.getUserRolesFromToken(token);
+        return jwtTokenUtils.getUserRolesFromToken(token);
     }
 
     @Override
     public JwtTokenVo getAccessToken(UserDetails userDetails) {
-        return jwtTokenUtil.generateToken(userDetails, TOKEN_TYPE_ACCESS);
+        return jwtTokenUtils.generateToken(userDetails, TOKEN_TYPE_ACCESS);
     }
 
     @Override
     public JwtTokenVo getRefreshToken(UserDetails userDetails) {
-        return jwtTokenUtil.generateToken(userDetails, TOKEN_TYPE_REFRESH);
+        return jwtTokenUtils.generateToken(userDetails, TOKEN_TYPE_REFRESH);
     }
 }

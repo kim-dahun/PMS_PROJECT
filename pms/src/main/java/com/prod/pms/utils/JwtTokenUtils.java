@@ -1,7 +1,6 @@
 package com.prod.pms.utils;
 
 import com.prod.pms.api.common.vo.JwtTokenVo;
-import com.prod.pms.constants.JwtConstants;
 import com.prod.pms.constants.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.*;
 import java.util.function.Function;
@@ -22,7 +19,7 @@ import static com.prod.pms.constants.JwtConstants.TOKEN_TYPE_ACCESS;
 import static com.prod.pms.constants.JwtConstants.TOKEN_TYPE_REFRESH;
 
 @Component
-public class JwtTokenUtil {
+public class JwtTokenUtils {
 
     @Value("${jwt.secret}")
     private String encodedSecretKey;

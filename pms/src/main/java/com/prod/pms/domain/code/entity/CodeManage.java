@@ -2,6 +2,7 @@ package com.prod.pms.domain.code.entity;
 
 import com.prod.pms.domain.common.entity.CmnBaseCUDEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "CODE_MANAGE")
+@Entity
 public class CodeManage extends CmnBaseCUDEntity {
 
     @Id
