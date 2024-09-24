@@ -1,6 +1,7 @@
 package com.prod.pms.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.NumberUtils;
 
 import java.util.*;
 
@@ -37,6 +38,47 @@ public class ObjectUtils {
         return paramMaps;
     }
 
+    public static List<Map<String,Object>> getSubTotal(List<Map<String,Object>> sortedMaps, Map<String,Object> pivotMap ,String sortColumnName){
+        String subTotalKey = sortedMaps.getFirst().get(sortColumnName).toString();
+        double subtotal = 0;
+        List<Map<String,Object>> resultMaps = new LinkedList<>();
+        for(int i = 0; i<sortedMaps.size(); i++){
+
+            String newSubTotalKey = sortedMaps.get(i).get(sortColumnName).toString();
+            double subtotalNow = getSubTotal(pivotMap,sortedMaps.get(i));
+            if(subTotalKey.equals(newSubTotalKey)){
+                subtotal += subtotalNow;
+            } else {
+                StringBuilder sb = new StringBuilder();
+                resultMaps.add(Map.of(sortColumnName,sb.append(subTotalKey).append(" 소계 : ").append(subtotal).toString()));
+                subtotal = subtotalNow;
+                subTotalKey = newSubTotalKey;
+            }
+            resultMaps.add(sortedMaps.get(i));
+
+        }
+        return resultMaps;
+    }
+
+    public static boolean isNumeric(String str) {
+        return str != null && str.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public static double getSubTotal(Map<String,Object> pivotMap, Map<String, Object> mapElement){
+        double subTotal = 0;
+
+        for(String key : pivotMap.keySet()){
+            if(!pivotMap.containsKey(key) && isNumeric(mapElement.get(key).toString())){
+                subTotal += Double.parseDouble(mapElement.get(key).toString());
+            }
+        }
+        return subTotal;
+    }
+
+
+    public static List<Map<String, Object>> getSortedPivotMap(List<Map<String, Object>> paramMaps, String pivotColumnName, String valueColumnName, Set<String> orderColumns){
+        return getOrderDataMap(getPivotDataMap(paramMaps,pivotColumnName, valueColumnName),orderColumns);
+    }
     public static List<Map<String, Object>> getPivotDataMap(List<Map<String, Object>> paramMaps, String pivotColumnName, String valueColumnName){
 
         // PIVOT 로직이란?
@@ -55,7 +97,7 @@ public class ObjectUtils {
 
             // 피벗 컬럼의 키 값은 pivotColumnkey, value는 valueColumn 두개를 연결하고 나머지는 소계값을 제공할 수 있는
             // 환경을 구축해야 함.
-            if(!paramMap.containsKey(pivotColumnName) || paramMap.get(pivotColumnName)==null){
+            if(isNotUsed(paramMap,pivotColumnName)){
                 continue;
             }
             String columnName = paramMap.get(pivotColumnName).toString();
@@ -100,5 +142,10 @@ public class ObjectUtils {
     public static ObjectMapper getObjectMapper(){
         return new ObjectMapper();
     }
+
+    public static boolean isNotUsed(Map<String, Object> paramMap, String pivotColumnName){
+        return !paramMap.containsKey(pivotColumnName) || paramMap.get(pivotColumnName)==null;
+    }
+
 
 }
