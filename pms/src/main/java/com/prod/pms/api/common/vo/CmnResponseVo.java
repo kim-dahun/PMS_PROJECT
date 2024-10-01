@@ -14,4 +14,11 @@ public class CmnResponseVo {
     private Object resultData;
     private String etc;
 
+
+    public void setCmnResponse(CmnResponseVo cmnResponseVo){
+        this.statusCode = cmnResponseVo.getStatusCode();
+        this.message = cmnResponseVo.getMessage();
+        this.etc = cmnResponseVo.getEtc();
+    }
+
 }

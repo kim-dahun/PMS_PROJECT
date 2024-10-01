@@ -17,12 +17,4 @@ public class CmnRequestVo {
 
     private String crudFlag;
 
-    // UserList 관련 객체
-    private UserInfoModifyVo userInfoModifyVo;
-    private UserInfoValidVo userInfoValidVo;
-    private UserInfoVo userInfoVo;
-    private UserLoginVo userLoginVo;
-
-
-
 }

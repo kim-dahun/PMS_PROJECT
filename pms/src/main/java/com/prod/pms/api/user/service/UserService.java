@@ -2,6 +2,7 @@ package com.prod.pms.api.user.service;
 
 import com.prod.pms.api.common.vo.CmnRequestVo;
 import com.prod.pms.api.common.vo.CmnResponseVo;
+import com.prod.pms.api.user.vo.UserInfoModifyVo;
 import com.prod.pms.api.user.vo.UserInfoVo;
 import com.prod.pms.api.user.vo.UserLoginVo;
 import com.prod.pms.domain.user.entity.UserInfo;
@@ -15,7 +16,7 @@ public interface UserService {
 
     UserInfo getUserInfo(String username, String userPassword);
 
-    ResponseEntity<CmnResponseVo> modifyUserInfo(CmnRequestVo cmnRequestVo);
+    ResponseEntity<CmnResponseVo> modifyUserInfo(UserInfoModifyVo userInfoModifyVo);
 
 
 }

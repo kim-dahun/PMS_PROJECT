@@ -1,6 +1,7 @@
 package com.prod.pms.api.user.service.impl;
 
 import com.prod.pms.api.common.service.MessageService;
+import com.prod.pms.api.common.service.ResponseService;
 import com.prod.pms.api.common.service.TokenService;
 import com.prod.pms.api.common.vo.CmnRequestVo;
 import com.prod.pms.api.common.vo.CmnResponseVo;
@@ -26,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
     private final MessageService messageService;
     private final TokenService tokenService;
     private final EntityManager em;
-
+    private final ResponseService responseService;
 
     public UserInfo getUserInfo(String username, String userPassword) {
 
@@ -63,80 +65,92 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public ResponseEntity<CmnResponseVo> isAvailableUser(UserInfo userInfo){
+        CmnResponseVo cmnResponseVo = new CmnResponseVo();
+        if(userInfo==null || userInfo.getUserId()==null){
+            cmnResponseVo.setCmnResponse(responseService.getNotExistUserId());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cmnResponseVo);
+        } else if(!userInfo.isEnabled()){
+            cmnResponseVo.setCmnResponse(responseService.getNotAccessUserId(KO));
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(cmnResponseVo);
+        }
+        return null;
+    }
+
     public ResponseEntity<CmnResponseVo> getUserInfoApi(UserLoginVo userLoginVo, HttpServletRequest request){
 
         CmnResponseVo cmnResponseVo = new CmnResponseVo();
         try {
             UserInfo userInfo = getUserInfo(userLoginVo.getUserId(), userLoginVo.getUserPassword());
-            if(userInfo==null || userInfo.getUserId()==null){
-                cmnResponseVo.setMessage(messageService.getMessage(request,null,NOT_EXIST_ACCOUNT));
-                cmnResponseVo.setStatusCode(HttpStatusConstants.NOT_FOUND);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cmnResponseVo);
-            } else if(!userInfo.isEnabled()){
-                cmnResponseVo.setStatusCode(HttpStatusConstants.FORBIDDEN);
-                cmnResponseVo.setMessage(messageService.getMessage(request,null,FAIL_ACCESS_ACCOUNT));
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(cmnResponseVo);
+            ResponseEntity<CmnResponseVo> notFoundResult = isAvailableUser(userInfo);
+            if(notFoundResult==null){
+                return notFoundResult;
             }
 
+            cmnResponseVo.setCmnResponse(responseService.getLoginSuccess(KO));
             cmnResponseVo.setResultData(UserInfoVo.fromEntity(userInfo));
-            cmnResponseVo.setStatusCode(HttpStatusConstants.OK);
-            cmnResponseVo.setMessage(messageService.getMessage(request,null,LOGIN_SUCCESS));
-
-            JwtTokenVo jwtTokenVo = tokenService.getRefreshToken(userInfo);
-
-            ResponseCookie accessCookie = ResponseCookie.from(TOKEN_TYPE_ACCESS, jwtTokenVo.getAccessToken()).httpOnly(true).maxAge(60*10).path("/").build();
-
-            ResponseCookie refreshCookie = ResponseCookie.from(TOKEN_TYPE_REFRESH, jwtTokenVo.getRefreshToken()).httpOnly(true).path("/")
-                    .maxAge(24 * 60 * 60).build();
-
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(HttpHeaders.SET_COOKIE,accessCookie.toString());
-            httpHeaders.add(HttpHeaders.SET_COOKIE,refreshCookie.toString());
-
-
+            HttpHeaders httpHeaders = getTokenHeaders(userInfo);
             return ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(cmnResponseVo);
         } catch(Exception e){
-            cmnResponseVo.setStatusCode(HttpStatusConstants.INTENAL_SERVER_ERROR);
-            cmnResponseVo.setMessage(messageService.getMessage(request,null,FAIL_LOGIN));
-            cmnResponseVo.setResultData(null);
+            cmnResponseVo.setCmnResponse(responseService.getLoginFail(KO));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
         }
 
 
     }
 
+    public HttpHeaders getTokenHeaders(UserInfo userInfo){
+        JwtTokenVo jwtTokenVo = tokenService.getRefreshToken(userInfo);
+
+        ResponseCookie accessCookie = ResponseCookie.from(TOKEN_TYPE_ACCESS, jwtTokenVo.getAccessToken()).httpOnly(true).maxAge(60*10).path("/").build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from(TOKEN_TYPE_REFRESH, jwtTokenVo.getRefreshToken()).httpOnly(true).path("/")
+                .maxAge(24 * 60 * 60).build();
+
+        HttpHeaders httpHeaders = new org.springframework.http.HttpHeaders();
+        httpHeaders.add(org.springframework.http.HttpHeaders.SET_COOKIE,accessCookie.toString());
+        httpHeaders.add(org.springframework.http.HttpHeaders.SET_COOKIE,refreshCookie.toString());
+        return httpHeaders;
+
+    }
+
+    public String getEncodedPassword(String password){
+        if(password!=null){
+            return passwordEncoder.encode(password);
+        }
+        return null;
+    }
+
+
+    public List<Role> getOrDefaultRoles(UserInfoModifyVo userInfoModifyVo, List<Role> roleList) {
+
+        if(userInfoModifyVo.getUserRole()!=null && !roleList.contains(Role.valueOf(userInfoModifyVo.getUserRole()))){
+            roleList.add(Role.valueOf(userInfoModifyVo.getUserRole()));
+        }
+        return roleList;
+    }
+
     @Override
-    public ResponseEntity<CmnResponseVo> modifyUserInfo(CmnRequestVo cmnRequestVo) {
-        UserInfoModifyVo userInfoModifyVo = cmnRequestVo.getUserInfoModifyVo();
+    public ResponseEntity<CmnResponseVo> modifyUserInfo(UserInfoModifyVo userInfoModifyVo) {
+
         CmnResponseVo cmnResponseVo = new CmnResponseVo();
-        if(userInfoModifyVo == null){
-            cmnResponseVo.setStatusCode(HttpStatusConstants.NO_CONTENT);
-            cmnResponseVo.setMessage(messageService.getMessage(KO,null,CREATE_ACCOUNT_FAIL));
+        if(userInfoModifyVo.getUserId() == null){
+
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(cmnResponseVo);
         }
 
         try {
             UserInfo userInfo = null;
-            switch (cmnRequestVo.getCrudFlag()){
+            switch (userInfoModifyVo.getCrudFlag()){
                 case CREATE -> {
                     userInfo = userInfoModifyVo.toEntity();
                     userInfo.getRoles().add(Role.USER);
                 }
                 case UPDATE -> {
                     userInfo = userInfoRepository.findById(userInfoModifyVo.getUserId()).orElseThrow();
-
-                    String encodePassword = null;
-                    if(userInfoModifyVo.getPassword()!=null){
-                        encodePassword = passwordEncoder.encode(userInfoModifyVo.getPassword());
-                    }
-                    List<Role> roleList = userInfo.getRoles();
-                    if(userInfoModifyVo.getUserRole()!=null && !roleList.contains(Role.valueOf(userInfoModifyVo.getUserRole()))){
-                        roleList.add(Role.valueOf(userInfoModifyVo.getUserRole()));
-                    }
-
+                    String encodePassword = getEncodedPassword(userInfoModifyVo.getPassword());
+                    List<Role> roleList = getOrDefaultRoles(userInfoModifyVo, userInfo.getRoles());
                     userInfo.updateUserInfo(userInfoModifyVo.getEmail(), userInfoModifyVo.getPhone(), userInfoModifyVo.getBirth(), userInfoModifyVo.getUseFlag(), encodePassword, userInfoModifyVo.getName(), roleList);
-
-
                 }
             }
 
@@ -145,22 +159,14 @@ public class UserServiceImpl implements UserService {
             }
 
             userInfoRepository.save(userInfo);
+            cmnResponseVo.setCmnResponse(responseService.getCreateUserSuccess());
+//            cmnResponseVo.setResultData(userInfo);
 
-
-            cmnResponseVo = CmnResponseVo.builder()
-                    .message(messageService.getMessage(KO,null,CREATE_ACCOUNT_SUCCESS))
-                    .statusCode(HttpStatusConstants.OK)
-                    .resultData(userInfo)
-                    .build();
 
             return ResponseEntity.ok(cmnResponseVo);
 
         } catch(Exception e){
-            cmnResponseVo = CmnResponseVo.builder()
-                    .message(messageService.getMessage(KO,null,CREATE_ACCOUNT_FAIL))
-                    .statusCode(HttpStatusConstants.INTENAL_SERVER_ERROR)
-                    .resultData(null)
-                    .build();
+            cmnResponseVo.setCmnResponse(responseService.getCreateUserFail());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
         }
 

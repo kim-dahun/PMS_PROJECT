@@ -3,6 +3,8 @@ package com.prod.pms.api.user.controller;
 import com.prod.pms.api.common.vo.CmnRequestVo;
 import com.prod.pms.api.common.vo.CmnResponseVo;
 import com.prod.pms.api.user.service.UserService;
+import com.prod.pms.api.user.vo.UserInfoModifyVo;
+import com.prod.pms.api.user.vo.UserLoginVo;
 import com.prod.pms.constants.ApiConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +23,17 @@ public class UserController {
 
     private final UserService userService;
     @PostMapping("/login")
-    public ResponseEntity<CmnResponseVo> api_getUserLoginInfo(@RequestBody CmnRequestVo cmnRequestVo, HttpServletRequest request){
-        return userService.getUserInfoApi(cmnRequestVo.getUserLoginVo(),request);
+    public ResponseEntity<CmnResponseVo> api_getUserLoginInfo(@RequestBody UserLoginVo userLoginVo, HttpServletRequest request){
+        return userService.getUserInfoApi(userLoginVo,request);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CmnResponseVo> api_insertUserInfo(@RequestBody CmnRequestVo cmnRequestVo){
+    public ResponseEntity<CmnResponseVo> api_insertUserInfo(@RequestBody UserInfoModifyVo cmnRequestVo){
         return userService.modifyUserInfo(cmnRequestVo);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<CmnResponseVo> api_updateUserInfo(@RequestBody CmnRequestVo cmnRequestVo){
+    public ResponseEntity<CmnResponseVo> api_updateUserInfo(@RequestBody UserInfoModifyVo cmnRequestVo){
         return userService.modifyUserInfo(cmnRequestVo);
     }
 

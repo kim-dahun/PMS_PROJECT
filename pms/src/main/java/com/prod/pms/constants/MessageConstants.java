@@ -13,6 +13,8 @@ public class MessageConstants {
 
     public static final String SEARCH_SUCCESS = "SEARCH_SUCCESS";
 
+    public static final String SEARCH_FAIL = "SEARCH_FAIL";
+
     public static final String NOT_EXIST_ACCOUNT = "NOT_EXIST_ACCOUNT";
 
     public static final String FAIL_ACCESS_ACCOUNT = "FAIL_ACCESS_ACCOUNT";
