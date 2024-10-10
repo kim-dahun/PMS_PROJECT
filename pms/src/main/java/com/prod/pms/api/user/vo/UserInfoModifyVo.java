@@ -35,6 +35,7 @@ public class UserInfoModifyVo extends CmnRequestVo {
 
     public UserInfo toEntity() {
         return UserInfo.builder()
+
                 .userPassword(password)
                 .companyId(companyId)
                 .userId(userId)
@@ -43,6 +44,8 @@ public class UserInfoModifyVo extends CmnRequestVo {
                 .userBirth(birth)
                 .userKorName(name)
                 .useFlag(useFlag)
+                .createUser(this.getRequestId())
+                .updateUser(this.getRequestId())
                 .build();
     }
 

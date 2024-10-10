@@ -13,6 +13,7 @@ import com.prod.pms.api.user.vo.UserLoginVo;
 import com.prod.pms.constants.*;
 import com.prod.pms.domain.user.entity.UserInfo;
 import com.prod.pms.domain.user.repository.UserInfoRepository;
+import com.prod.pms.utils.JwtTokenUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.prod.pms.constants.CommonConstants.CREATE;
@@ -150,7 +152,8 @@ public class UserServiceImpl implements UserService {
                     userInfo = userInfoRepository.findById(userInfoModifyVo.getUserId()).orElseThrow();
                     String encodePassword = getEncodedPassword(userInfoModifyVo.getPassword());
                     List<Role> roleList = getOrDefaultRoles(userInfoModifyVo, userInfo.getRoles());
-                    userInfo.updateUserInfo(userInfoModifyVo.getEmail(), userInfoModifyVo.getPhone(), userInfoModifyVo.getBirth(), userInfoModifyVo.getUseFlag(), encodePassword, userInfoModifyVo.getName(), roleList);
+                    userInfo.updateUserInfo(userInfoModifyVo.getEmail(), userInfoModifyVo.getPhone(), userInfoModifyVo.getBirth(), userInfoModifyVo.getUseFlag(), encodePassword, userInfoModifyVo.getName(), roleList, tokenService.getUserIdByToken());
+
                 }
             }
 

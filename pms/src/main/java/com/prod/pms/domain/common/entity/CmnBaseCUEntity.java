@@ -3,10 +3,8 @@ package com.prod.pms.domain.common.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -19,24 +17,26 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
+@Setter
 public abstract class CmnBaseCUEntity {
 
     @CreatedBy
     @Column(name = "CREATE_USER", updatable = false)
-    private String createUser;
+    protected String createUser;
 
     @CreatedDate
     @Column(name = "CREATE_DATE", updatable = false)
-    private LocalDateTime createDate;
+    protected LocalDateTime createDate;
 
     @LastModifiedDate
     @Column(name = "UPDATE_DATE")
-    private LocalDateTime updateDate;
+    protected LocalDateTime updateDate;
 
     @LastModifiedBy
     @Column(name = "UPDATE_USER")
-    private String updateUser;
+    protected String updateUser;
 
 
 }

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "USER_LIST")
 @Entity
 public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
@@ -73,7 +73,7 @@ public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
      * @param userKorName
      * @param roles
      */
-    public void updateUserInfo(String userEmail, String userPhone, String userBirth, String useFlag, String userPassword, String userKorName, List<Role> roles){
+    public void updateUserInfo(String userEmail, String userPhone, String userBirth, String useFlag, String userPassword, String userKorName, List<Role> roles, String updateId){
         this.userEmail = userEmail==null ?  this.userEmail : userEmail;
         this.userPhone = userPhone==null ? this.userPhone : userPhone;
         this.userBirth = userBirth==null ? this.userBirth : userBirth;
@@ -81,6 +81,7 @@ public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
         this.useFlag = useFlag == null ? this.useFlag : useFlag;
         this.userPassword = userPassword == null ? this.userPassword : userPassword;
         this.roles = roles == null ? this.roles : roles;
+        this.updateUser = updateId == null ? this.updateUser : updateId;
     }
 
 

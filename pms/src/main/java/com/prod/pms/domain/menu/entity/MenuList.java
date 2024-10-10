@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "MENU_LIST")
 @Entity
 public class MenuList extends CmnBaseCUDEntity {
@@ -26,4 +26,15 @@ public class MenuList extends CmnBaseCUDEntity {
 
     @Column(name = "MENU_URL")
     private String menuUrl;
+
+    @Column(name = "MENU_PARENT_NO")
+    private Long menuParentNo;
+
+    public void updateMenuList(String menuName, String menuUrl, String updateId, Long menuParentNo) {
+        this.updateUser = updateId;
+        this.menuName = menuName;
+        this.menuUrl = menuUrl;
+        this.menuParentNo = menuParentNo;
+    }
+
 }

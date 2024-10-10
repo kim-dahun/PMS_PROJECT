@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "MENU_AUTH_LIST")
 @Entity
 @IdClass(MenuAuthId.class)

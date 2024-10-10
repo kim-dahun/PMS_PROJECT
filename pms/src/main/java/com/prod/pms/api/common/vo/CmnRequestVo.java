@@ -17,4 +17,6 @@ public class CmnRequestVo {
 
     private String crudFlag;
 
+    private String requestId;
+
 }

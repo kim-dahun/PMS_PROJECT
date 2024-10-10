@@ -3,10 +3,7 @@ package com.prod.pms.domain.common.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,13 +17,31 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
-public abstract class CmnBaseCUDEntity extends CmnBaseCUEntity {
+@Setter
+public abstract class CmnBaseCUDEntity {
+
+    @CreatedBy
+    @Column(name = "CREATE_USER", updatable = false)
+    protected String createUser;
+
+    @CreatedDate
+    @Column(name = "CREATE_DATE", updatable = false)
+    protected LocalDateTime createDate;
+
+    @LastModifiedDate
+    @Column(name = "UPDATE_DATE")
+    protected LocalDateTime updateDate;
+
+    @LastModifiedBy
+    @Column(name = "UPDATE_USER")
+    protected String updateUser;
 
     @Column(name = "DELETE_DATE")
-    private LocalDateTime deleteDate;
+    protected LocalDateTime deleteDate;
 
     @Column(name = "DELETE_USER")
-    private String deleteUser;
+    protected String deleteUser;
 
 }

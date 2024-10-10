@@ -6,13 +6,17 @@ import com.prod.pms.api.menu.vo.MenuListVo;
 import com.prod.pms.api.menu.vo.MenuModifyVo;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface MenuService {
 
     ResponseEntity<CmnResponseVo> api_getMenuList(MenuListVo menuListVo);
 
     ResponseEntity<CmnResponseVo> api_getMenuListAll();
 
-    ResponseEntity<CmnResponseVo> api_modifyMenuList(MenuModifyVo menuModifyVo);
+    boolean api_modifyMenuList(MenuModifyVo menuModifyVo);
+
+    ResponseEntity<CmnResponseVo> api_modifyMenuList(List<MenuModifyVo> menuModifyVos);
 
 //    ResponseEntity<CmnResponseVo> api_
 

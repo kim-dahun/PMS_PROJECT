@@ -4,6 +4,8 @@ import com.prod.pms.constants.Role;
 import com.prod.pms.domain.user.entity.UserInfo;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -29,6 +31,10 @@ public class UserInfoVo {
 
     private String birth;
 
+    private LocalDateTime updateDate;
+
+    private String updateUser;
+
     public static UserInfoVo fromEntity(UserInfo userInfo){
         return UserInfoVo.builder()
                 .userId(userInfo.getUserId())
@@ -38,6 +44,8 @@ public class UserInfoVo {
                 .phone(userInfo.getUserPhone())
                 .companyId(userInfo.getCompanyId())
                 .birth(userInfo.getUserBirth())
+                .updateUser(userInfo.getUpdateUser())
+                .updateDate(userInfo.getUpdateDate())
                 .build();
     }
 
