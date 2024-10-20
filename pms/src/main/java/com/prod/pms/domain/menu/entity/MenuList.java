@@ -30,11 +30,15 @@ public class MenuList extends CmnBaseCUDEntity {
     @Column(name = "MENU_PARENT_NO")
     private Long menuParentNo;
 
-    public void updateMenuList(String menuName, String menuUrl, String updateId, Long menuParentNo) {
+    @Column(name = "MENU_SEQ")
+    private Long menuSeq;
+
+    public void updateMenuList(String menuName, String menuUrl, String updateId, Long menuParentNo, Long menuSeq) {
         this.updateUser = updateId;
         this.menuName = menuName;
         this.menuUrl = menuUrl;
         this.menuParentNo = menuParentNo;
+        this.menuSeq = menuSeq;
     }
 
 }

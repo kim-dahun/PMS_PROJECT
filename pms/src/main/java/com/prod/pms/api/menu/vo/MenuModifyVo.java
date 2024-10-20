@@ -21,6 +21,8 @@ public class MenuModifyVo extends CmnRequestVo {
 
     Long menuParentNo;
 
+    Long menuSeq;
+
 
 
     public MenuList toEntity(){
@@ -29,6 +31,8 @@ public class MenuModifyVo extends CmnRequestVo {
                 .menuName(menuName)
                 .menuUrl(menuUrl)
                 .menuParentNo(menuParentNo)
+                .menuSeq(menuSeq)
+                .menuSeq(menuSeq)
                 .updateUser(this.getRequestId())
                 .createUser(this.getRequestId())
                 .build();

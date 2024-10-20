@@ -20,6 +20,8 @@ public class MenuListVo {
 
     Long parentNo;
 
+    Long menuSeq;
+
     List<MenuListVo> children;
 
     public static MenuListVo fromEntity(MenuList menuList){

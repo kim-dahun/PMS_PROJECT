@@ -69,7 +69,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     public MenuListVo getNodeMenu(){
-        return new MenuListVo(-1L,"node","",null,null);
+        return new MenuListVo(-1L,"node","",null,null,null);
     }
 
 
@@ -105,10 +105,10 @@ public class MenuServiceImpl implements MenuService {
             }
             resultMap.put("successCnt",successCnt);
             cmnResponseVo.setResultData(resultMap);
-            cmnResponseVo.setCmnResponse(responseService.getSearchSuccess());
+            cmnResponseVo.setCmnResponse(successCnt==menuModifyVos.size() ? responseService.getModifySuccess() : responseService.getModifyPartiallySucceed());
             return ResponseEntity.ok(cmnResponseVo);
         } catch(Exception e){
-            cmnResponseVo.setCmnResponse(responseService.getSearchFail());
+            cmnResponseVo.setCmnResponse(responseService.getModifyFailed());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
         }
     }
@@ -127,7 +127,7 @@ public class MenuServiceImpl implements MenuService {
                 }
                 case UPDATE -> {
                     menuList = menuRepository.findById(menuModifyVo.getMenuNo()).orElseThrow();
-                    menuList.updateMenuList(menuModifyVo.getMenuName(), menuModifyVo.getMenuUrl(), menuModifyVo.getRequestId(), menuModifyVo.getMenuParentNo());
+                    menuList.updateMenuList(menuModifyVo.getMenuName(), menuModifyVo.getMenuUrl(), menuModifyVo.getRequestId(), menuModifyVo.getMenuParentNo(), menuModifyVo.getMenuSeq());
                     menuRepository.save(menuList);
                 }
                 case DELETE -> {
