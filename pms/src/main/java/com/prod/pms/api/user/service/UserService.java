@@ -16,6 +16,9 @@ public interface UserService {
 
     UserInfo getUserInfo(String username, String userPassword);
 
+    UserInfoVo getUserSimpleInfo(String userId);
+
+
     ResponseEntity<CmnResponseVo> modifyUserInfo(UserInfoModifyVo userInfoModifyVo);
 
 

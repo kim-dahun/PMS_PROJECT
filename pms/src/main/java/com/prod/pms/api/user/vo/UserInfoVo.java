@@ -33,6 +33,8 @@ public class UserInfoVo {
 
     private LocalDateTime updateDate;
 
+    private String useFlag;
+
     private String updateUser;
 
     public static UserInfoVo fromEntity(UserInfo userInfo){
@@ -44,6 +46,7 @@ public class UserInfoVo {
                 .phone(userInfo.getUserPhone())
                 .companyId(userInfo.getCompanyId())
                 .birth(userInfo.getUserBirth())
+                .useFlag(userInfo.getUseFlag())
                 .updateUser(userInfo.getUpdateUser())
                 .updateDate(userInfo.getUpdateDate())
                 .build();

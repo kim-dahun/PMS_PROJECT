@@ -6,6 +6,7 @@ import com.prod.pms.api.common.service.TokenService;
 import com.prod.pms.api.common.vo.CmnRequestVo;
 import com.prod.pms.api.common.vo.CmnResponseVo;
 import com.prod.pms.api.common.vo.JwtTokenVo;
+import com.prod.pms.api.user.queryDsl.UserQueryDsl;
 import com.prod.pms.api.user.service.UserService;
 import com.prod.pms.api.user.vo.UserInfoModifyVo;
 import com.prod.pms.api.user.vo.UserInfoVo;
@@ -49,8 +50,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
     private final TokenService tokenService;
-    private final EntityManager em;
+
     private final ResponseService responseService;
+    private final UserQueryDsl userQueryDsl;
 
     public UserInfo getUserInfo(String username, String userPassword) {
 
@@ -65,6 +67,11 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public UserInfoVo getUserSimpleInfo(String userId) {
+        return userQueryDsl.getUserSimpleInfoById(UserInfoVo.builder().userId(userId).build());
     }
 
     public ResponseEntity<CmnResponseVo> isAvailableUser(UserInfo userInfo){
@@ -85,7 +92,7 @@ public class UserServiceImpl implements UserService {
         try {
             UserInfo userInfo = getUserInfo(userLoginVo.getUserId(), userLoginVo.getUserPassword());
             ResponseEntity<CmnResponseVo> notFoundResult = isAvailableUser(userInfo);
-            if(notFoundResult==null){
+            if(notFoundResult!=null){
                 return notFoundResult;
             }
 
