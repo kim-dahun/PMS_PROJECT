@@ -31,4 +31,8 @@ public class MessageConstants {
 
     public static final String CREATE_ACCOUNT_FAIL = "CREATE_ACCOUNT_FAIL";
 
+    public static final String MODIFY_SUCCESS = "MODIFY_SUCCESS";
+    public static final String MODIFY_FAIL = "MODIFY_FAIL";
+    public static final String MODIFY_PARTIALLY_SUCCESS = "MODIFY_PARTIALLY_SUCCESS";
+
 }

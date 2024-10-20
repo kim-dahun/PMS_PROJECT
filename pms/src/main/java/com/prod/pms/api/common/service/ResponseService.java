@@ -24,4 +24,11 @@ public interface ResponseService {
     CmnResponseVo getSearchSuccess();
 
     CmnResponseVo getSearchFail();
+
+    CmnResponseVo getModifySuccess();
+
+    CmnResponseVo getModifyFailed();
+
+    CmnResponseVo getModifyPartiallySucceed();
+
 }

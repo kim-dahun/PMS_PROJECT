@@ -16,7 +16,7 @@ import static com.prod.pms.constants.MessageConstants.*;
 @Slf4j
 public class ResponseServiceImpl implements ResponseService {
 
-    private MessageService messageService;
+    private final MessageService messageService;
 
     @Override
     public CmnResponseVo getLoginFail(String langCode) {
@@ -83,6 +83,30 @@ public class ResponseServiceImpl implements ResponseService {
         return CmnResponseVo.builder()
                 .message(messageService.getMessage(KO,null, SEARCH_FAIL))
                 .statusCode(NO_CONTENT)
+                .build();
+    }
+
+    @Override
+    public CmnResponseVo getModifySuccess() {
+        return CmnResponseVo.builder()
+                .message(messageService.getMessage(KO,null, MODIFY_SUCCESS))
+                .statusCode(OK)
+                .build();
+    }
+
+    @Override
+    public CmnResponseVo getModifyFailed() {
+        return CmnResponseVo.builder()
+                .message(messageService.getMessage(KO,null, MODIFY_FAIL))
+                .statusCode(OK)
+                .build();
+    }
+
+    @Override
+    public CmnResponseVo getModifyPartiallySucceed() {
+        return CmnResponseVo.builder()
+                .message(messageService.getMessage(KO,null, MODIFY_PARTIALLY_SUCCESS))
+                .statusCode(OK)
                 .build();
     }
 
