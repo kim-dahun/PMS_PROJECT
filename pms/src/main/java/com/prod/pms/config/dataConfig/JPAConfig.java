@@ -1,5 +1,6 @@
 package com.prod.pms.config.dataConfig;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
@@ -17,6 +18,11 @@ public class JPAConfig {
     @Bean
     public EntityManager getEntityManager(){
         return entityManager;
+    }
+
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(){
+        return new JPAQueryFactory(entityManager);
     }
 
 
