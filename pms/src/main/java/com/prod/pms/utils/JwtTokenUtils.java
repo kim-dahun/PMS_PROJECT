@@ -2,6 +2,7 @@ package com.prod.pms.utils;
 
 import com.prod.pms.api.common.vo.JwtTokenVo;
 import com.prod.pms.constants.Role;
+import com.prod.pms.domain.user.entity.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -43,6 +44,11 @@ public class JwtTokenUtils {
         return ((List<String>)claims.get("userRole")).stream().map(x->Role.valueOf(x)).toList();
     }
 
+    public String getUserCompanyIdFromToken(String token){
+        final Claims claims = getAllClaimsFromToken(token);
+        return claims.get("companyId",String.class);
+    }
+
     // 토큰에서 발행일 추출
     public Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
@@ -76,9 +82,9 @@ public class JwtTokenUtils {
     }
 
     // 토큰 생성
-    public JwtTokenVo generateToken(UserDetails userDetails, String type) {
+    public JwtTokenVo generateToken(UserInfo userDetails, String type) {
 
-        Map<String, Object> customClaims = Map.of("userRole",userDetails.getAuthorities().stream().map(x->x.toString()).toList(),"userLocale","ko");
+        Map<String, Object> customClaims = Map.of("userRole",userDetails.getAuthorities().stream().map(x->x.toString()).toList(),"userLocale","ko","companyId",userDetails.getCompanyId());
 
         byte[] keyBytes = Decoders.BASE64.decode(encodedSecretKey);
         Key key = Keys.hmacShaKeyFor(keyBytes);

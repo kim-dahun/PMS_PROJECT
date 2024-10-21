@@ -20,7 +20,7 @@ public class Column {
     private Long columnId;
 
     @jakarta.persistence.Column(name = "MENU_NO", length = 40)
-    private String menuNo;
+    private Long menuNo;
 
     @jakarta.persistence.Column(name = "VIEW_ID", length = 40)
     private String viewId;

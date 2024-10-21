@@ -1,5 +1,6 @@
 package com.prod.pms.config.Security;
 
+import com.prod.pms.domain.user.entity.UserInfo;
 import com.prod.pms.utils.JwtTokenUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -39,7 +41,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
             }
 
             String username = null;
-
+            String companyId = request.getHeader("CompanyId");
 
             if (accessToken != null && accessToken.startsWith("Bearer ")) {
                 accessToken = accessToken.substring(7);
@@ -52,7 +54,8 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails user = userDetailsService.loadUserByUsername(username);
+                UserInfo userDetails = (UserInfo) user;
                 if (jwtTokenUtils.validateToken(accessToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                             userDetails.getUsername(), null, userDetails.getAuthorities());
