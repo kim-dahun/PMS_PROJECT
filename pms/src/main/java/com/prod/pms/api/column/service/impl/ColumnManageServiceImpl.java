@@ -95,7 +95,8 @@ public class ColumnManageServiceImpl implements ColumnManageService {
                     columnRepository.save(column);
                 }
                 case UPDATE -> {
-                    column = columnModifyVo.toEntity();
+                    column = columnRepository.findById(columnModifyVo.getColumnId()).orElse(new Column());
+                    column.updateEntity(columnModifyVo.getRequireFlag(), columnModifyVo.getEditFlag(), columnModifyVo.getReadonly(), columnModifyVo.getColumnName(), columnModifyVo.getColumnText(), columnModifyVo.getColumnType(), columnModifyVo.getSelectItemCode());
                     columnRepository.save(column);
                 }
                 case DELETE -> {

@@ -1,5 +1,6 @@
 package com.prod.pms.domain.column.entity;
 
+import com.prod.pms.api.column.vo.ColumnModifyVo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,5 +46,16 @@ public class Column {
 
     @jakarta.persistence.Column(name = "SELECT_ITEM_CODE", length = 40)
     private String selectItemCode; // 드랍다운일 경우 사용할 아이템 목록 코드그룹 ID
+
+    public void updateEntity(String requireFlag, String editFlag, String readonly, String columnName, String columnText, String colummType, String selectItemCode){
+        this.colummType = colummType;
+        this.columnName = columnName;
+        this.columnText = columnText;
+        this.requireFlag = requireFlag;
+        this.editFlag = editFlag;
+        this.readonly = readonly;
+        this.selectItemCode = selectItemCode;
+
+    }
 
 }
