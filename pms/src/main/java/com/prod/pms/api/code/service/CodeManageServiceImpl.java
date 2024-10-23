@@ -28,8 +28,7 @@ public class CodeManageServiceImpl implements CodeManageService{
     @Override
     public List<CodeManageVo> getCodeListByCodeType(String codeType, String companyId) {
         return codeManageRepository.findByCodeTypeAndUseFlagAndCompanyId(codeType, "Y" ,companyId)
-                .stream().map(CodeManageVo::fromEntity).toList()
-                ;
+                .stream().map(CodeManageVo::fromEntity).toList();
     }
 
     @Override
