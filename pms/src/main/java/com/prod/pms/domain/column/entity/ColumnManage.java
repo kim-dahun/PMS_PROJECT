@@ -22,8 +22,8 @@ public class ColumnManage extends CmnBaseCUEntity {
     @Column(name = "COLUMN_MANAGE_ID")
     private Long columnManageId;
 
-    @Column(name = "MENU_NO", length = 40)
-    private String menuNo;
+    @Column(name = "MENU_NO")
+    private Long menuNo;
 
     @Column(name = "VIEW_ID", length = 40)
     private String viewId;
@@ -58,5 +58,13 @@ public class ColumnManage extends CmnBaseCUEntity {
     @jakarta.persistence.Column(name = "SELECT_ITEM_CODE", length = 40)
     private String selectItemCode; // 드랍다운일 경우 사용할 아이템 목록 코드그룹 ID
 
+
+    public void updateColumnManage(Long columnSeq, String editFlag, String readonly, String requireFlag, String columnText ){
+        this.columnSeq = columnSeq;
+        this.readonly = readonly;
+        this.columnText = columnText;
+        this.editFlag = editFlag;
+        this.requireFlag = requireFlag;
+    }
 
 }

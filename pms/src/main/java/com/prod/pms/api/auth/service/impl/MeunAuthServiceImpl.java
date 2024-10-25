@@ -94,6 +94,21 @@ public class MeunAuthServiceImpl implements MenuAuthService {
     }
 
     @Override
+    public ResponseEntity<CmnResponseVo> api_getMenuAuthByRole(MenuRoleAuthReadVo menuAuthReadVo) {
+        CmnResponseVo cmnResponseVo = new CmnResponseVo();
+        try {
+            cmnResponseVo.setResultData(getMenuRoleAuthList(
+                    menuAuthReadVo
+            ));
+            cmnResponseVo.setCmnResponse(responseService.getSearchSuccess());
+            return ResponseEntity.ok(cmnResponseVo);
+        }catch (Exception e){
+            cmnResponseVo.setCmnResponse(responseService.getSearchFail());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
+        }
+    }
+
+    @Override
     public ResponseEntity<CmnResponseVo> api_modifyMenuAuth(List<MenuAuthVo> menuAuthModifyVos) {
         CmnResponseVo cmnResponseVo = new CmnResponseVo();
         try {

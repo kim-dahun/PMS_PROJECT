@@ -21,6 +21,8 @@ public interface MenuAuthService {
 
     ResponseEntity<CmnResponseVo> api_getMenuAuthByUser(MenuRoleAuthReadVo menuAuthReadVo);
 
+    ResponseEntity<CmnResponseVo> api_getMenuAuthByRole(MenuRoleAuthReadVo menuAuthReadVo);
+
     ResponseEntity<CmnResponseVo> api_modifyMenuAuth(List<MenuAuthVo> menuAuthVo);
 
     ResponseEntity<CmnResponseVo> api_modifyRoleMenuAuth(List<MenuAuthVo> menuAuthVo);

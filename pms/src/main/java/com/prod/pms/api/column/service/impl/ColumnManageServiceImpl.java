@@ -2,14 +2,14 @@ package com.prod.pms.api.column.service.impl;
 
 import com.prod.pms.api.code.service.CodeManageService;
 import com.prod.pms.api.column.service.ColumnManageService;
-import com.prod.pms.api.column.vo.ColumnManageVo;
-import com.prod.pms.api.column.vo.ColumnModifyVo;
-import com.prod.pms.api.column.vo.ColumnReadVo;
+import com.prod.pms.api.column.vo.*;
 import com.prod.pms.api.common.service.ResponseService;
 import com.prod.pms.api.common.service.TokenService;
 import com.prod.pms.api.common.vo.CmnResponseVo;
 import com.prod.pms.api.menu.vo.MenuModifyVo;
 import com.prod.pms.domain.column.entity.Column;
+import com.prod.pms.domain.column.entity.ColumnManage;
+import com.prod.pms.domain.column.repository.ColumnManageRepository;
 import com.prod.pms.domain.column.repository.ColumnRepository;
 import com.prod.pms.domain.menu.entity.MenuList;
 import com.prod.pms.utils.JwtTokenUtils;
@@ -31,6 +31,7 @@ public class ColumnManageServiceImpl implements ColumnManageService {
 
     private final ResponseService responseService;
     private final ColumnRepository columnRepository;
+    private final ColumnManageRepository columnManageRepository;
     private final CodeManageService codeManageService;
     private final TokenService tokenService;
     @Override
@@ -41,6 +42,14 @@ public class ColumnManageServiceImpl implements ColumnManageService {
     }
 
     public ColumnManageVo getRefineColumnSource(ColumnManageVo columnManageVo){
+        columnManageVo.setEditable(columnManageVo.getEditFlag()!=null && columnManageVo.getEditFlag().equals("Y"));
+        columnManageVo.setRequire(columnManageVo.getRequireFlag()!=null && columnManageVo.getRequireFlag().equals("Y"));
+        columnManageVo.setReadonly(columnManageVo.getReadonlyFlag()!=null && columnManageVo.getReadonlyFlag().equals("Y"));
+        columnManageVo.setOptions(codeManageService.getCodeListByCodeType(columnManageVo.getColumnType(), tokenService.getCompanyId()));
+        return columnManageVo;
+    }
+
+    public ColumnPrivateDataVo getRefinePrivateColumnSource(ColumnPrivateDataVo columnManageVo){
         columnManageVo.setEditable(columnManageVo.getEditFlag()!=null && columnManageVo.getEditFlag().equals("Y"));
         columnManageVo.setRequire(columnManageVo.getRequireFlag()!=null && columnManageVo.getRequireFlag().equals("Y"));
         columnManageVo.setReadonly(columnManageVo.getReadonlyFlag()!=null && columnManageVo.getReadonlyFlag().equals("Y"));
@@ -108,5 +117,76 @@ public class ColumnManageServiceImpl implements ColumnManageService {
         } catch(Exception e){
             return false;
         }
+    }
+
+    @Override
+    public boolean modifyPrivateColumn(ColumnPrivateModifyVo columnModifyVo) {
+        try {
+            String crudFlag = columnModifyVo.getCrudFlag();
+            ColumnManage columnManage = null;
+
+            switch (crudFlag){
+                case CREATE -> {
+                    columnManage = columnModifyVo.toEntity();
+                    columnManageRepository.save(columnManage);
+                }
+                case UPDATE -> {
+                    columnManage = columnManageRepository.findById(columnModifyVo.getColumnId()).orElse(new ColumnManage());
+                    columnManage.updateColumnManage(columnModifyVo.getColumnSeq(),columnModifyVo.getEditFlag(), columnModifyVo.getReadonly(), columnModifyVo.getRequireFlag(), columnModifyVo.getColumnText());
+                    columnManageRepository.save(columnManage);
+                }
+                case DELETE -> {
+                    columnManage = columnManageRepository.findById(columnModifyVo.getColumnId()).orElseThrow();
+                    columnManageRepository.delete(columnManage);
+                }
+            }
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+
+
+    }
+
+    @Override
+    public ResponseEntity<CmnResponseVo> api_modifyPrivateColumnData(List<ColumnPrivateModifyVo> columnModifyVoList) {
+        CmnResponseVo cmnResponseVo = new CmnResponseVo();
+
+        try {
+            int successCnt = 0;
+            for(ColumnPrivateModifyVo columnModifyVo : columnModifyVoList){
+                if(modifyPrivateColumn(columnModifyVo)){
+                    successCnt++;
+                }
+            }
+            Map<String, Object> resultMap = Map.of("totalCnt",columnModifyVoList.size(),"successCnt",successCnt);
+            cmnResponseVo.setResultData(resultMap);
+            cmnResponseVo.setCmnResponse(successCnt==columnModifyVoList.size() ? responseService.getModifySuccess() : responseService.getModifyPartiallySucceed());
+            return ResponseEntity.ok(cmnResponseVo);
+        } catch(Exception e){
+            cmnResponseVo.setCmnResponse(responseService.getModifyFailed());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
+        }
+    }
+
+    @Override
+    public ResponseEntity<CmnResponseVo> api_getColumnData(ColumnMngReadVo columnMngReadVo) {
+        CmnResponseVo cmnResponseVo = new CmnResponseVo();
+        try {
+            cmnResponseVo.setResultData(getColumnManageListByViewIdAndMenuIdAndUserId(columnMngReadVo));
+            cmnResponseVo.setCmnResponse(responseService.getSearchSuccess());
+            return ResponseEntity.ok(cmnResponseVo);
+        } catch (Exception e){
+            cmnResponseVo.setCmnResponse(responseService.getSearchFail());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
+        }
+    }
+
+    @Override
+    public List<ColumnPrivateDataVo> getColumnManageListByViewIdAndMenuIdAndUserId(ColumnMngReadVo columnMngReadVo) {
+        Long menuNo = columnMngReadVo.getMenuNo();
+        String viewId = columnMngReadVo.getViewId();
+        String userId = columnMngReadVo.getUserId();
+        return columnManageRepository.findByViewIdAndMenuNoAndUserId(viewId, menuNo,userId ).stream().map(ColumnPrivateDataVo::fromEntity).map(this::getRefinePrivateColumnSource).toList();
     }
 }

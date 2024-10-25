@@ -1,8 +1,6 @@
 package com.prod.pms.api.column.service;
 
-import com.prod.pms.api.column.vo.ColumnManageVo;
-import com.prod.pms.api.column.vo.ColumnModifyVo;
-import com.prod.pms.api.column.vo.ColumnReadVo;
+import com.prod.pms.api.column.vo.*;
 import com.prod.pms.api.common.vo.CmnResponseVo;
 import com.prod.pms.domain.column.entity.Column;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,12 @@ public interface ColumnManageService {
 
     boolean modifyColumn(ColumnModifyVo columnModifyVo);
 
+    boolean modifyPrivateColumn(ColumnPrivateModifyVo columnModifyVo);
 
+    ResponseEntity<CmnResponseVo> api_modifyPrivateColumnData(List<ColumnPrivateModifyVo> columnModifyVoList);
+
+    ResponseEntity<CmnResponseVo> api_getColumnData(ColumnMngReadVo columnMngReadVo);
+
+    List<ColumnPrivateDataVo> getColumnManageListByViewIdAndMenuIdAndUserId(ColumnMngReadVo columnMngReadVo);
 
 }

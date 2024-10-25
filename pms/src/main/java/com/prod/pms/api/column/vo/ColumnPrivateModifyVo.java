@@ -1,15 +1,15 @@
 package com.prod.pms.api.column.vo;
 
 import com.prod.pms.api.common.vo.CmnRequestVo;
-import com.prod.pms.domain.column.entity.Column;
+import com.prod.pms.domain.column.entity.ColumnManage;
 import lombok.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
-public class ColumnModifyVo extends CmnRequestVo {
+public class ColumnPrivateModifyVo extends CmnRequestVo {
 
     private Long menuNo;
     private String viewId;
@@ -22,20 +22,27 @@ public class ColumnModifyVo extends CmnRequestVo {
     private String editFlag;
     private String readonly;
 
+    private Long columnManageId;
+    private String userId;
+    private String userType;
+    private Long columnSeq;
 
-    public Column toEntity(){
+    public ColumnManage toEntity(){
 
-        return Column.builder()
+        return ColumnManage.builder()
                 .columnId(columnId)
                 .menuNo(menuNo)
                 .viewId(viewId)
                 .requireFlag(requireFlag)
-                .columnName(columnName)
                 .columnText(columnText)
                 .colummType(columnType)
                 .selectItemCode(selectItemCode)
                 .editFlag(editFlag)
                 .readonly(readonly)
+                .columnSeq(columnSeq)
+                .columnManageId(columnManageId)
+                .userId(userId)
+                .userType(userType)
                 .build();
 
     }
