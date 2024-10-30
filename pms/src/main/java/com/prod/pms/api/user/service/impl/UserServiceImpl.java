@@ -3,7 +3,6 @@ package com.prod.pms.api.user.service.impl;
 import com.prod.pms.api.common.service.MessageService;
 import com.prod.pms.api.common.service.ResponseService;
 import com.prod.pms.api.common.service.TokenService;
-import com.prod.pms.api.common.vo.CmnRequestVo;
 import com.prod.pms.api.common.vo.CmnResponseVo;
 import com.prod.pms.api.common.vo.JwtTokenVo;
 import com.prod.pms.api.user.queryDsl.UserQueryDsl;
@@ -14,8 +13,6 @@ import com.prod.pms.api.user.vo.UserLoginVo;
 import com.prod.pms.constants.*;
 import com.prod.pms.domain.user.entity.UserInfo;
 import com.prod.pms.domain.user.repository.UserInfoRepository;
-import com.prod.pms.utils.JwtTokenUtils;
-import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +21,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.prod.pms.constants.CommonConstants.CREATE;
@@ -84,6 +77,20 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(cmnResponseVo);
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<CmnResponseVo> getUserList(UserInfoVo userInfoVo) {
+        CmnResponseVo cmnResponseVo = new CmnResponseVo();
+        try {
+            List<UserInfoVo> userInfoVos = userInfoRepository.findAll().stream().map(UserInfoVo::fromEntity).toList();
+            cmnResponseVo.setCmnResponse(responseService.getSearchSuccess());
+            cmnResponseVo.setResultData(userInfoVos);
+            return ResponseEntity.status(HttpStatus.OK).body(cmnResponseVo);
+        } catch(Exception e){
+            cmnResponseVo.setCmnResponse(responseService.getSearchFail());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cmnResponseVo);
+        }
     }
 
     public ResponseEntity<CmnResponseVo> getUserInfoApi(UserLoginVo userLoginVo, HttpServletRequest request){

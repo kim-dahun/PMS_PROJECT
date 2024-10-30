@@ -12,12 +12,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService {
 
+    ResponseEntity<CmnResponseVo> getUserList(UserInfoVo userInfoVo);
+
     ResponseEntity<CmnResponseVo> getUserInfoApi(UserLoginVo userLoginVo, HttpServletRequest request);
 
     UserInfo getUserInfo(String username, String userPassword);
 
     UserInfoVo getUserSimpleInfo(String userId);
-
 
     ResponseEntity<CmnResponseVo> modifyUserInfo(UserInfoModifyVo userInfoModifyVo);
 
