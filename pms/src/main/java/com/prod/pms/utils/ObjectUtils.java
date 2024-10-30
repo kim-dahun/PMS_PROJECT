@@ -147,5 +147,9 @@ public class ObjectUtils {
         return !paramMap.containsKey(pivotColumnName) || paramMap.get(pivotColumnName)==null;
     }
 
+    public static boolean isNotNullAndIsUsed(String param){
+        return param!=null && param.equals("Y");
+    }
+
 
 }

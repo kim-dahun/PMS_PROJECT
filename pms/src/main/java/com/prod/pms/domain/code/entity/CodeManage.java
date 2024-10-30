@@ -46,4 +46,15 @@ public class CodeManage extends CmnBaseCUDEntity {
     @Column(name = "COMPANY_ID", length = 80)
     private String companyId;
 
+
+    public void updateCodeManage(String codeName, String textAttr01, String textAttr02, Double numAttr01, Double numAttr02, String useFlag){
+        this.codeName = codeName;
+        this.textAttr01 = textAttr01;
+        this.textAttr02 = textAttr02;
+        this.numAttr01 = numAttr01;
+        this.numAttr02 = numAttr02;
+        this.useFlag = useFlag;
+    }
+
+
 }

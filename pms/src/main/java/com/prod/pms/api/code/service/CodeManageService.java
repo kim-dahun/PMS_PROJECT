@@ -12,7 +12,9 @@ public interface CodeManageService {
 
     List<CodeManageVo> getCodeManageList(CodeReadVo codeReadVo);
 
-    List<CodeManageVo> getCodeListByCodeType(String codeType, String companyId);
+//    List<CodeManageVo> getCodeListByCodeType(String codeType, String companyId);
+
+    List<CodeManageVo> getCodeListByCodeType(String codeType, String companyId, String useFlag);
 
     ResponseEntity<CmnResponseVo> api_getCodeListByCodeType(CodeReadVo codeReadVo);
 

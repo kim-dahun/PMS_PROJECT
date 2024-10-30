@@ -13,6 +13,7 @@ import com.prod.pms.domain.column.repository.ColumnManageRepository;
 import com.prod.pms.domain.column.repository.ColumnRepository;
 import com.prod.pms.domain.menu.entity.MenuList;
 import com.prod.pms.utils.JwtTokenUtils;
+import com.prod.pms.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.prod.pms.constants.CommonConstants.*;
+import static com.prod.pms.utils.ObjectUtils.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,18 +44,18 @@ public class ColumnManageServiceImpl implements ColumnManageService {
     }
 
     public ColumnManageVo getRefineColumnSource(ColumnManageVo columnManageVo){
-        columnManageVo.setEditable(columnManageVo.getEditFlag()!=null && columnManageVo.getEditFlag().equals("Y"));
-        columnManageVo.setRequire(columnManageVo.getRequireFlag()!=null && columnManageVo.getRequireFlag().equals("Y"));
-        columnManageVo.setReadonly(columnManageVo.getReadonlyFlag()!=null && columnManageVo.getReadonlyFlag().equals("Y"));
-        columnManageVo.setOptions(codeManageService.getCodeListByCodeType(columnManageVo.getColumnType(), tokenService.getCompanyId()));
+        columnManageVo.setEditable(isNotNullAndIsUsed(columnManageVo.getEditFlag()));
+        columnManageVo.setRequire(isNotNullAndIsUsed(columnManageVo.getRequireFlag()));
+        columnManageVo.setReadonly(isNotNullAndIsUsed(columnManageVo.getReadonlyFlag()));
+        columnManageVo.setOptions(codeManageService.getCodeListByCodeType(columnManageVo.getColumnType(), tokenService.getCompanyId(), "Y"));
         return columnManageVo;
     }
 
-    public ColumnPrivateDataVo getRefinePrivateColumnSource(ColumnPrivateDataVo columnManageVo){
-        columnManageVo.setEditable(columnManageVo.getEditFlag()!=null && columnManageVo.getEditFlag().equals("Y"));
-        columnManageVo.setRequire(columnManageVo.getRequireFlag()!=null && columnManageVo.getRequireFlag().equals("Y"));
-        columnManageVo.setReadonly(columnManageVo.getReadonlyFlag()!=null && columnManageVo.getReadonlyFlag().equals("Y"));
-        columnManageVo.setOptions(codeManageService.getCodeListByCodeType(columnManageVo.getColumnType(), tokenService.getCompanyId()));
+    public ColumnPrivateDataVo getRefineColumnSource(ColumnPrivateDataVo columnManageVo){
+        columnManageVo.setEditable(isNotNullAndIsUsed(columnManageVo.getEditFlag()));
+        columnManageVo.setRequire(isNotNullAndIsUsed(columnManageVo.getRequireFlag()));
+        columnManageVo.setReadonly(isNotNullAndIsUsed(columnManageVo.getReadonlyFlag()));
+        columnManageVo.setOptions(codeManageService.getCodeListByCodeType(columnManageVo.getColumnType(), tokenService.getCompanyId(),"Y"));
         return columnManageVo;
     }
 
@@ -187,6 +189,6 @@ public class ColumnManageServiceImpl implements ColumnManageService {
         Long menuNo = columnMngReadVo.getMenuNo();
         String viewId = columnMngReadVo.getViewId();
         String userId = columnMngReadVo.getUserId();
-        return columnManageRepository.findByViewIdAndMenuNoAndUserId(viewId, menuNo,userId ).stream().map(ColumnPrivateDataVo::fromEntity).map(this::getRefinePrivateColumnSource).toList();
+        return columnManageRepository.findByViewIdAndMenuNoAndUserId(viewId, menuNo,userId ).stream().map(ColumnPrivateDataVo::fromEntity).map(this::getRefineColumnSource).toList();
     }
 }
