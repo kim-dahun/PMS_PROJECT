@@ -16,10 +16,11 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@CrossOrigin
 @RequestMapping(ApiConstants.API_URL + "/menu")
 public class MenuController {
 
-    private MenuService menuService;
+    private final MenuService menuService;
 
     @GetMapping("/select")
     public ResponseEntity<CmnResponseVo> api_getMenu(MenuListVo menuListVo){

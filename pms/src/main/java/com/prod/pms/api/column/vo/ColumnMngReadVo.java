@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 public class ColumnMngReadVo extends CmnRequestVo {
 
     private Long menuNo;

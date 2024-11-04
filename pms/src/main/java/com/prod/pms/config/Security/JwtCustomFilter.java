@@ -32,25 +32,37 @@ public class JwtCustomFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        if(request.getRequestURL().indexOf("/user/login")!=-1){
+            filterChain.doFilter(request,response);
+            return;
+        }
+
         String accessToken = null;
         String refreshToken = null;
         if(request.getCookies()!=null) {
             for (Cookie x : request.getCookies()) {
-                accessToken = x.getAttribute(TOKEN_TYPE_ACCESS);
-                refreshToken = x.getAttribute(TOKEN_TYPE_REFRESH);
+                if(x.getName().equals(TOKEN_TYPE_ACCESS)){
+                    accessToken = x.getValue();
+                }
+
+                if(x.getName().equals(TOKEN_TYPE_REFRESH)){
+                    refreshToken = x.getValue();
+                }
+
             }
 
             String username = null;
             String companyId = request.getHeader("CompanyId");
 
-            if (accessToken != null && accessToken.startsWith("Bearer ")) {
-                accessToken = accessToken.substring(7);
+            if (accessToken != null) {
+//                accessToken = accessToken.substring(7);
                 username = jwtTokenUtils.getUsernameFromToken(accessToken);
             }
 
-            if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
-                refreshToken = refreshToken.substring(7);
-            }
+//            if (refreshToken != null) {
+//                refreshToken = refreshToken.substring(7);
+//            }
 
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -1,5 +1,6 @@
 package com.prod.pms.config.Security;
 
+import com.prod.pms.constants.ApiConstants;
 import com.prod.pms.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +9,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import static com.prod.pms.constants.ApiConstants.API_URL;
 import static com.prod.pms.constants.Role.*;
 
 @Configuration
@@ -33,13 +38,13 @@ public class SpringSecurityCustomConfig  {
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/user/login").permitAll()
-                .requestMatchers("/user/create").permitAll()
-                .requestMatchers("/user/auth/**").authenticated()
-                .requestMatchers("/user/menu/**").authenticated()
-                .requestMatchers("/menu/**").hasAnyRole(SUPER_ADMIN.name(),ADMIN.name(),LEADER.name(),PART_LEADER.name(),USER.name())
-                .requestMatchers("/admin/**").hasAnyRole(SUPER_ADMIN.name(), ADMIN.name())
-                .anyRequest().permitAll())
+                .requestMatchers(API_URL+"/user/login").permitAll()
+                .requestMatchers(API_URL+"/user/create").permitAll()
+                .requestMatchers(API_URL+"/user/auth/**").authenticated()
+                .requestMatchers(API_URL+"/user/menu/**").authenticated()
+                .requestMatchers(API_URL+"/menu/**").authenticated()
+                .requestMatchers(API_URL+"/admin/**").authenticated()
+                .anyRequest().authenticated())
                 .addFilterBefore(new JwtCustomFilter(jwtTokenUtils,userDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

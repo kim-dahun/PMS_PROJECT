@@ -30,9 +30,9 @@ import static com.prod.pms.constants.MessageConstants.SEARCH_SUCCESS;
 public class MenuServiceImpl implements MenuService {
 
 
-    private MessageService messageService;
-    private ResponseService responseService;
-    private MenuRepository menuRepository;
+    private final MessageService messageService;
+    private final ResponseService responseService;
+    private final MenuRepository menuRepository;
     @Override
     public ResponseEntity<CmnResponseVo> api_getMenuList(MenuListVo menuListVo) {
 
