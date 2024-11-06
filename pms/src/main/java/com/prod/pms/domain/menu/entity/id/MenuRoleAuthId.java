@@ -1,6 +1,7 @@
 package com.prod.pms.domain.menu.entity.id;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
+@Embeddable
 public class MenuRoleAuthId implements Serializable {
 
     @Column(name = "ROLE_ID")

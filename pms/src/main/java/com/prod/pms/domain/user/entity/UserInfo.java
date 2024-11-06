@@ -74,16 +74,19 @@ public class UserInfo extends CmnBaseCUDEntity implements UserDetails {
      * @param roles
      */
     public void updateUserInfo(String userEmail, String userPhone, String userBirth, String useFlag, String userPassword, String userKorName, List<Role> roles, String updateId){
-        this.userEmail = userEmail==null ?  this.userEmail : userEmail;
-        this.userPhone = userPhone==null ? this.userPhone : userPhone;
-        this.userBirth = userBirth==null ? this.userBirth : userBirth;
-        this.userKorName = userKorName ==null ? this.userKorName : userKorName;
-        this.useFlag = useFlag == null ? this.useFlag : useFlag;
-        this.userPassword = userPassword == null ? this.userPassword : userPassword;
-        this.roles = roles == null ? this.roles : roles;
-        this.updateUser = updateId == null ? this.updateUser : updateId;
+        this.userEmail = isNull(userEmail) ?  this.userEmail : userEmail;
+        this.userPhone = isNull(userPhone) ? this.userPhone : userPhone;
+        this.userBirth = isNull(userBirth) ? this.userBirth : userBirth;
+        this.userKorName = isNull(userKorName) ? this.userKorName : userKorName;
+        this.useFlag = isNull(useFlag) ? this.useFlag : useFlag;
+        this.userPassword = isNull(userPassword) ? this.userPassword : userPassword;
+        this.roles = isNull(roles) ? this.roles : roles;
+        this.updateUser = isNull(updateId) ? this.updateUser : updateId;
     }
 
+    public boolean isNull(Object obj){
+        return obj==null;
+    }
 
     @Override
     public String getPassword() {
