@@ -1,18 +1,24 @@
 package com.prod.pms.domain.resource.entity;
 
+import com.prod.pms.domain.common.entity.CmnBaseCUDEntity;
 import com.prod.pms.domain.resource.entity.id.ResourceManageId;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name = "RESOURCE_MANAGE")
-public class ResourceManage {
+public class ResourceManage extends CmnBaseCUDEntity {
     @EmbeddedId
     private ResourceManageId id;
 
@@ -23,7 +29,7 @@ public class ResourceManage {
     private String resourceType;
 
     @Column(name = "RESOURCE_COST")
-    private Integer resourceCost;
+    private Long resourceCost;
 
     @Column(name = "RESOURCE_DESC", length = 400)
     private String resourceDesc;

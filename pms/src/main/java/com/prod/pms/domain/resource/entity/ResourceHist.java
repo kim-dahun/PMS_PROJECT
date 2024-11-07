@@ -1,5 +1,6 @@
 package com.prod.pms.domain.resource.entity;
 
+import com.prod.pms.domain.common.entity.CmnBaseCUDEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.time.Instant;
 @SuperBuilder
 @Entity
 @Table(name = "RESOURCE_HIST")
-public class ResourceHist {
+public class ResourceHist extends CmnBaseCUDEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "HIST_SEQ", nullable = false)
@@ -29,6 +30,9 @@ public class ResourceHist {
 
     @Column(name = "PROJECT_CODE", length = 40)
     private String projectCode;
+
+    @Column(name = "RESOURCE_COST")
+    private Long resourceCost;
 
     @Column(name = "INPUT_START_DATE")
     private Instant inputStartDate;
