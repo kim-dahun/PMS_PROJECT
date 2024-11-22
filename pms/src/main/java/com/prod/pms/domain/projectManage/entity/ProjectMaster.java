@@ -33,4 +33,7 @@ public class ProjectMaster extends CmnBaseCUDEntity {
     @Column(name = "END_DATE")
     private LocalDateTime endDate;
 
+    @Column(name = "PROJECT_STEP", length = 40)
+    private String projectStep;
+
 }

@@ -2,7 +2,7 @@ package com.prod.pms.domain.projectManage.entity;
 
 import com.prod.pms.domain.common.entity.CmnBaseCUDEntity;
 import com.prod.pms.domain.projectManage.entity.id.ProjectDetailId;
-import com.prod.pms.domain.projectManage.entity.id.ProjectMasterId;
+import com.prod.pms.domain.projectManage.entity.id.ProjectHistId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -18,10 +18,9 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @EqualsAndHashCode
 @Entity
-@Table(name = "PROJECT_DETAIL")
-@IdClass(ProjectDetailId.class)
-public class ProjectDetail extends CmnBaseCUDEntity {
-
+@Table(name = "PROJECT_HISTORY")
+@IdClass(ProjectHistId.class)
+public class ProjectHist extends CmnBaseCUDEntity {
 
     @Id
     private String companyId;
@@ -30,7 +29,16 @@ public class ProjectDetail extends CmnBaseCUDEntity {
     private String projectCd;
 
     @Id
-    private String subJobCode;
+    private String jobCode;
+
+    @Id
+    private String histTimekey;
+
+    @Column(name = "HIST_TYPE",length = 40)
+    private String histType;
+
+    @Column(name = "PROJECT_STEP", length = 40)
+    private String projectStep;
 
     @Column(name = "START_DATE")
     private LocalDateTime startDate;
@@ -59,7 +67,7 @@ public class ProjectDetail extends CmnBaseCUDEntity {
     @Column(name = "UPPER_SUB_JOB_CODE")
     private String upperSubJobCode;
 
-    @Column(name = "LEVEL", nullable = false)
+    @Column(name = "LEVEL")
     private Integer level;
 
 }
