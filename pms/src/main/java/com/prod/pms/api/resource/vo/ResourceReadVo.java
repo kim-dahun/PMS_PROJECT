@@ -13,6 +13,7 @@ public class ResourceReadVo extends CmnRequestVo {
     private String companyId;
     private String projectCd;
     private String resourceDesc;
+    private String resourceType;
     private String resourceName;
     private String startDate;
     private String endDate;

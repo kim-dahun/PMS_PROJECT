@@ -43,7 +43,7 @@ public class ResourceModifyVo extends CmnRequestVo {
                 .build();
     }
 
-    public ResourceModifyVo fromEntity(ResourceManage resourceManage){
+    public static ResourceModifyVo fromEntity(ResourceManage resourceManage){
 
         return ResourceModifyVo.builder()
                 .resourceCode(resourceManage.getId().getResourceCode())
